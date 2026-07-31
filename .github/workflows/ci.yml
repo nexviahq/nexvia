@@ -5,35 +5,28 @@ on:
     branches:
       - main
 
-  pull_request:
-    branches:
-      - main
-
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+    - name: Install Dependencies
+      working-directory: frontend
+      run: npm install
 
+    - name: Run Lint
+      working-directory: frontend
+      run: npm run lint
 
-      - name: Install Dependencies
-        run: npm install
-
-
-      - name: Run Lint
-        run: npm run lint
-
-
-      - name: Build Application
-        run: npm run build
+    - name: Build Application
+      working-directory: frontend
+      run: npm run build
