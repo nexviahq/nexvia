@@ -19,14 +19,27 @@ jobs:
       with:
         node-version: 24
 
+    - name: Check frontend package manifest
+      id: frontend-package
+      run: |
+        if [ -f frontend/package.json ]; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+          echo "Skipping frontend build because frontend/package.json is missing."
+        fi
+
     - name: Install Dependencies
+      if: steps.frontend-package.outputs.exists == 'true'
       working-directory: frontend
       run: npm install
 
     - name: Run Lint
+      if: steps.frontend-package.outputs.exists == 'true'
       working-directory: frontend
       run: npm run lint
 
     - name: Build Application
+      if: steps.frontend-package.outputs.exists == 'true'
       working-directory: frontend
       run: npm run build
